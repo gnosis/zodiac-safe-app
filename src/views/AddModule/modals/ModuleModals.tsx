@@ -1,5 +1,6 @@
 import React from "react";
 import {TellorModuleModal} from "./TellorModuleModal";
+import { OptimisticGovernorModuleModal } from "./OptimisticGovernorModuleModal";
 import { RealityModuleModal } from "./RealityModuleModal";
 import { DelayModuleModal } from "./DelayModuleModal";
 import { ModuleType } from "../../../store/modules/models";
@@ -24,10 +25,15 @@ export const ModuleModals = ({
   return (
     <>
       <TellorModuleModal
-         open={selected === ModuleType.TELLOR}
-         onClose={onClose}
-         onSubmit={() => onSubmit && onSubmit(ModuleType.TELLOR)}
-       />
+        open={selected === ModuleType.TELLOR}
+        onClose={onClose}
+        onSubmit={() => onSubmit && onSubmit(ModuleType.TELLOR)}
+      />
+      <OptimisticGovernorModuleModal
+        open={selected === ModuleType.OPTIMISTIC_GOVERNOR}
+        onClose={onClose}
+        onSubmit={() => onSubmit && onSubmit(ModuleType.OPTIMISTIC_GOVERNOR)}
+      />
       <RealityModuleModal
         open={selected === ModuleType.REALITY_ETH}
         onClose={onClose}

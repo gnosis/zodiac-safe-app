@@ -132,6 +132,13 @@ export const AddModulesView = () => {
         />
 
         <ModuleButton
+          title="Optimistic Governor Module"
+          description="Enables on-chain execution of successful Snapshot proposals utilizing UMA's optimistic oracle."
+          icon="reality"
+          onClick={() => setModule(ModuleType.OPTIMISTIC_GOVERNOR)}
+        />
+
+        <ModuleButton
           title="Custom Module"
           description="Enable a custom contract as a module"
           icon="custom"

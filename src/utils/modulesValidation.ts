@@ -4,6 +4,7 @@ import DELAY_MODIFIER_METADATA from "../contracts/Delay.json";
 import REALITY_ERC20_MODULE_METADATA from "../contracts/RealityModuleERC20.json";
 import REALITY_ETH_MODULE_METADATA from "../contracts/RealityModuleETH.json";
 import TELLOR_MODULE_METADATA from "../contracts/Tellor.json";
+import OPTIMISTIC_GOVERNOR_MODULE_METADATA from "../contracts/OptimisticGovernor.json";
 import BRIDGE_MODULE_METADATA from "../contracts/AMBModule.json";
 import EXIT_MODULE_METADATA from "../contracts/Exit.json";
 import ROLES_MODIFIER_METADATA from "../contracts/RolesMod.json";
@@ -12,6 +13,7 @@ import { getProvider } from "../services";
 
 const MODULES_METADATA = {
   [ModuleType.TELLOR]: TELLOR_MODULE_METADATA,
+  [ModuleType.OPTIMISTIC_GOVERNOR]: OPTIMISTIC_GOVERNOR_MODULE_METADATA,
   [ModuleType.REALITY_ETH]: REALITY_ETH_MODULE_METADATA,
   [ModuleType.REALITY_ERC20]: REALITY_ERC20_MODULE_METADATA,
   [ModuleType.EXIT]: EXIT_MODULE_METADATA,

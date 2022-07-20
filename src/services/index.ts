@@ -13,6 +13,7 @@ import { getNetworkExplorerInfo } from "../utils/explorers";
 import { SafeInfo, SafeTransaction } from "../store/modules/models";
 import { NETWORK } from "../utils/networks";
 import { ERC721_CONTRACT_ABI } from "../utils/reality-eth";
+import { scaleBondDecimals } from "components/input/CollateralSelect";
 
 export enum ARBITRATOR_OPTIONS {
   NO_ARBITRATOR,
@@ -36,6 +37,16 @@ interface TellorModuleParams {
   oracle?: string;
   cooldown: string;
   expiration: string;
+}
+
+interface OptimisticGovernorModuleParams {
+  executor: string;
+  owner: string;
+  collateral: string;
+  bond: string;
+  rules: string;
+  identifier: string;
+  liveness: string;
 }
 
 interface DelayModuleParams {
@@ -97,6 +108,60 @@ export function getDefaultOracle(chainId: number): string {
       return "0xE78996A233895bE74a66F451f1019cA9734205cc";
     case NETWORK.POLYGON:
       return "0x60573B8DcE539aE5bF9aD7932310668997ef0428";
+  }
+  return "";
+}
+
+export function getFinder(chainId: number): string {
+  switch (chainId) {
+    case NETWORK.MAINNET:
+      return "0x40f941E48A552bF496B154Af6bf55725f18D77c3";
+    case NETWORK.RINKEBY:
+      return "0xbb6206fb01fAad31e8aaFc3AD303cEA89D8c8157";
+    case NETWORK.POLYGON:
+      return "0x09aea4b2242abC8bb4BB78D537A67a245A7bEC64";
+  }
+  return "";
+}
+
+export enum COLLATERAL_OPTIONS {
+  WETH,
+  USDC
+}
+
+export function getCollateral(
+  chainId: number,
+  collateralOption: number
+): string {
+  switch (collateralOption) {
+    case COLLATERAL_OPTIONS.USDC:
+      return getUSDCAddress(chainId);
+    case COLLATERAL_OPTIONS.WETH:
+      return getWETHAddress(chainId);
+  }
+  return "";
+}
+
+function getUSDCAddress(chainId: number): string {
+  switch (chainId) {
+    case NETWORK.MAINNET:
+      return "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+    case NETWORK.RINKEBY:
+      return "0xeb8f08a975Ab53E34D8a0330E0D34de942C95926";
+    case NETWORK.POLYGON:
+      return "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
+  }
+  return "";
+}
+
+function getWETHAddress(chainId: number): string {
+  switch (chainId) {
+    case NETWORK.MAINNET:
+      return "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+    case NETWORK.RINKEBY:
+      return "0xc778417E063141139Fce010982780140Aa0cD5Ab";
+    case NETWORK.POLYGON:
+      return "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619";
   }
   return "";
 }
@@ -593,4 +658,81 @@ export function deployRolesModifier(
     },
     enableRolesModifierTransaction,
   ];
+}
+
+export function deployOptimisticGovernorModule(
+  safeAddress: string,
+  chainId: number,
+  args: OptimisticGovernorModuleParams
+) {
+  const type = KnownContracts.OPTIMISTIC_GOVERNOR
+  const provider = getProvider(chainId);
+
+  const {
+    executor,
+    collateral,
+    bond,
+    rules,
+    identifier,
+    liveness
+  } = args;
+
+  const scaledBond = scaleBondDecimals(collateral, bond).toString()
+
+  const {
+    transaction: daoModuleDeploymentTx,
+    expectedModuleAddress: daoModuleExpectedAddress,
+  } = deployAndSetUpModule(
+    type,
+    {
+      types: [
+        "address",
+        "address",
+        "uint256",
+        "string",
+        "bytes32",
+        "uint64"
+      ],
+      values: [
+        executor,
+        collateral,
+        scaledBond,
+        rules,
+        identifier,
+        liveness
+      ],
+    },
+    provider,
+    chainId,
+    Date.now().toString()
+  );
+
+  const daoModuleTransactions: Transaction[] = [
+    {
+      ...daoModuleDeploymentTx,
+      value: daoModuleDeploymentTx.value.toString(),
+    }
+  ];
+
+  if (executor !== safeAddress) {
+    const delayModule = getModuleInstance(
+      KnownContracts.DELAY,
+      executor,
+      provider
+    );
+    const addModuleTransaction = buildTransaction(delayModule, "enableModule", [
+      daoModuleExpectedAddress,
+    ]);
+
+    daoModuleTransactions.push(addModuleTransaction);
+  } else {
+    const enableDaoModuleTransaction = enableModule(
+      safeAddress,
+      chainId,
+      daoModuleExpectedAddress
+    );
+    daoModuleTransactions.push(enableDaoModuleTransaction);
+  }
+
+  return daoModuleTransactions;
 }

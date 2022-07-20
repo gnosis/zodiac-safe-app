@@ -2,6 +2,7 @@ import { ContractInterface } from "@ethersproject/contracts";
 
 export enum ModuleType {
   TELLOR = "tellor",
+  OPTIMISTIC_GOVERNOR = "optimisticGovernor",
   REALITY_ETH = "realityETH",
   REALITY_ERC20 = "realityERC20",
   DELAY = "delay",
@@ -13,6 +14,7 @@ export enum ModuleType {
 
 export const MODULE_TYPES: Record<string, ModuleType> = {
   tellor: ModuleType.TELLOR,
+  optimisticGovernor: ModuleType.OPTIMISTIC_GOVERNOR,
   realityETH: ModuleType.REALITY_ETH,
   realityERC20: ModuleType.REALITY_ERC20,
   delay: ModuleType.DELAY,
@@ -25,6 +27,7 @@ export const MODULE_TYPES: Record<string, ModuleType> = {
 
 export const MODULE_NAMES: Record<ModuleType, string> = {
   [ModuleType.TELLOR]: "Tellor Module",
+  [ModuleType.OPTIMISTIC_GOVERNOR]: "Optimistic Governor Module",
   [ModuleType.REALITY_ERC20]: "Reality Module",
   [ModuleType.REALITY_ETH]: "Reality Module",
   [ModuleType.UNKNOWN]: "Unknown Module",
@@ -76,6 +79,17 @@ export interface TellorModule extends Module {
   oracle: string;
   expiration: number;
   cooldown: number;
+}
+
+export interface OptimisticGovernorModule extends Module {
+  type: ModuleType.OPTIMISTIC_GOVERNOR;
+  finder: string;
+  owner: string;
+  collateral: string;
+  bond: string;
+  rules: string;
+  identifier: string;
+  liveness: string;
 }
 
 export interface RealityModule extends Module {
