@@ -57,3 +57,7 @@ export function getCurrentPendingModule(state: RootState) {
 export function getModuleAdded(state: RootState) {
   return state.modules.moduleAdded;
 }
+
+export function getRealityModuleScreen(state: RootState) {
+  return state.modules.realityModuleScreen;
+}

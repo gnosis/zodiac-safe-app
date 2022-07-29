@@ -7,9 +7,12 @@ import {
   makeStyles,
   StandardTextFieldProps,
   TextField as MUITextField,
+  Tooltip,
   withStyles,
 } from "@material-ui/core";
 import classNames from "classnames";
+import { colors } from "zodiac-ui-components";
+import HelpOutline from "@material-ui/icons/HelpOutline";
 
 const StyledTextField = withStyles((theme) => ({
   root: {
@@ -49,22 +52,31 @@ const useStyles = makeStyles((theme) => ({
       textAlign: "right",
     },
   },
+  icon: {
+    fontSize: "1rem",
+  },
   append: {
     display: "flex",
     alignItems: "center",
     padding: theme.spacing(1),
     borderWidth: 1,
     borderStyle: "solid",
-    borderColor: theme.palette.text.primary,
     borderLeftWidth: 0,
+  },
+  primary: {
+    borderColor: theme.palette.primary.light,
+  },
+  secondary: {
+    borderColor: colors.tan[300],
   },
 }));
 
-export interface TextFieldProps
-  extends Omit<StandardTextFieldProps, "variant" | "label"> {
+export interface TextFieldProps extends Omit<StandardTextFieldProps, "variant" | "label"> {
   label?: string;
   append?: React.ReactElement | string;
   AppendProps?: GridProps;
+  variantAppend?: "primary" | "secondary";
+  tooltipMsg?: string;
 }
 
 export const TextField = ({
@@ -72,7 +84,9 @@ export const TextField = ({
   InputLabelProps,
   label,
   append,
+  variantAppend,
   AppendProps,
+  tooltipMsg,
   ...props
 }: TextFieldProps) => {
   const classes = useStyles();
@@ -98,9 +112,20 @@ export const TextField = ({
 
   return (
     <div>
-      <InputLabel {...InputLabelProps} className={classes.label}>
-        {label}
-      </InputLabel>
+      <Grid container justifyContent='space-between' alignItems='center'>
+        <Grid item>
+          <InputLabel {...InputLabelProps} className={classes.label}>
+            {label}
+          </InputLabel>
+        </Grid>
+        {tooltipMsg && (
+          <Grid item>
+            <Tooltip title={tooltipMsg}>
+              <HelpOutline className={classes.icon} />
+            </Tooltip>
+          </Grid>
+        )}
+      </Grid>
       <Grid container className={classes.root}>
         <Grid item className={classes.inputContainer}>
           <InputBase
@@ -118,8 +143,10 @@ export const TextField = ({
           item
           xs={8}
           {...AppendProps}
-          className={classNames(classes.append, AppendProps?.className)}
-        >
+          className={classNames(
+            `${classes.append} ${variantAppend === "primary" ? classes.primary : classes.secondary}`,
+            AppendProps?.className
+          )}>
           {append}
         </Grid>
       </Grid>

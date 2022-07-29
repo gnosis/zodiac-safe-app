@@ -99,6 +99,7 @@ export interface ModulesState {
   safeThreshold: number;
   pendingModules: PendingModule[];
   moduleAdded: boolean;
+  realityModuleScreen: boolean;
 }
 
 export type Operation = "read" | "write";

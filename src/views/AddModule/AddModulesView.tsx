@@ -6,7 +6,7 @@ import { useRootDispatch, useRootSelector } from "../../store";
 import { getModulesList } from "../../store/modules/selectors";
 import { ModuleModals } from "./modals/ModuleModals";
 import { ModuleType } from "../../store/modules/models";
-import { fetchPendingModules, setModuleAdded } from "../../store/modules";
+import { fetchPendingModules, setModuleAdded, setRealityModuleScreen } from "../../store/modules";
 import { useSafeAppsSDK } from "@gnosis.pm/safe-apps-react-sdk";
 
 const useStyles = makeStyles((theme) => ({
@@ -51,6 +51,7 @@ export const AddModulesView = () => {
     dispatch(fetchPendingModules(safe));
     dispatch(setModuleAdded(true));
   };
+
 
   const title = hasModules ? "Add another mod" : "Start by adding a mod";
 
@@ -121,7 +122,7 @@ export const AddModulesView = () => {
           title="Reality Module"
           description="Enables on-chain execution based on the outcome of events reported by the Reality.eth oracle"
           icon="reality"
-          onClick={() => setModule(ModuleType.REALITY_ETH)}
+          onClick={() => dispatch(setRealityModuleScreen(true))}
         />
 
         <ModuleButton

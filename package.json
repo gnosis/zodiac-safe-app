@@ -24,7 +24,7 @@
     "react-redux": "^7.2.4",
     "styled-components": "^5.1.1",
     "timeago-react": "^3.0.2",
-    "zodiac-ui-components": "^0.0.29"
+    "zodiac-ui-components": "^0.0.30"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.4",

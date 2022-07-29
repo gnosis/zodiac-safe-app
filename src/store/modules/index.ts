@@ -23,6 +23,7 @@ const initialModulesState: ModulesState = {
   current: undefined,
   pendingModules: [],
   moduleAdded: false,
+  realityModuleScreen: false,
 };
 
 export const fetchModulesList = createAsyncThunk(
@@ -129,6 +130,9 @@ export const modulesSlice = createSlice({
     setModuleAdded(state, action: PayloadAction<boolean>) {
       state.moduleAdded = action.payload;
     },
+    setRealityModuleScreen(state, action: PayloadAction<boolean>) {
+      state.realityModuleScreen = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(fetchModulesList.rejected, (state) => {
@@ -163,4 +167,5 @@ export const {
   setOperation,
   setCurrentPendingModule,
   setModuleAdded,
+  setRealityModuleScreen
 } = modulesSlice.actions;
